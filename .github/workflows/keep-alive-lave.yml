@@ -9,15 +9,14 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase via PostgREST
+      - name: Ping Supabase via Auth endpoint
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL_LAVE }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY_LAVE }}
         run: |
           http_code=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
-            "${SUPABASE_URL}/rest/v1/" \
-            -H "apikey: ${SUPABASE_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_KEY}")
+            "${SUPABASE_URL}/auth/v1/settings" \
+            -H "apikey: ${SUPABASE_KEY}")
 
           echo "HTTP status: $http_code"
           echo "Resposta completa do servidor:"
@@ -25,7 +24,7 @@ jobs:
           echo ""
 
           if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
-            echo "✅ Ping bem-sucedido"
+            echo "✅ Ping bem-sucedido - Lave Interiores continua ativo"
           else
             echo "⚠️ Erro - veja a resposta completa acima"
             exit 1
